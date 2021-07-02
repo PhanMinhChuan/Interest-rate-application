@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Alex+Brush');
 * {
 	margin: 0px; 
 	padding: 0px; 
@@ -515,16 +516,16 @@ th, td {
 
 .titleMe {
   padding-top: 55px;
-  font-style: oblique;
-  font-size: 42px;
-  text-decoration-line: underline;
+  font-size: 46px;
+  margin-left: 22px;
+  font-family: 'Alex Brush', cursive;
 }
 
 .buttonMe {
-  height: 35px;
-  width: 70px;
+  height: 37px;
+  width: 48px;
   background-color: #555555;
-  font-size: 18px;
+  font-size: 21px;
   color: whitesmoke;
   border-radius: 15%;
   margin-bottom: 12px;
@@ -540,19 +541,20 @@ th, td {
 
 .deleteMe {
   height: 35px;
-  width: 90px;
-  background-color: lightgray;
-  font-size: 18px;
-  color: firebrick;
+  padding-bottom: 6px;
+  width: 50px;
+  background-color: #00ad5f;
+  font-size: 22px;
+  color: #2f2b2b;
   border-radius: 5%;
   font-style: italic;
   font-weight: bold;
   margin-left: 14px;
-  border: 1px solid firebrick;
+  border: 1px solid #bdb3b3;
 }
 
 .deleteMe:hover {
-  background-color: black;
+  background-color: #f38282;
 }
 
 .lineThough {
@@ -568,8 +570,6 @@ th, td {
   float: right;
   height: 35px;
   width: 50px;
-  background-color: red;
-  border: 1px solid black;
   font-size: 18px;
   border-radius: 9%;
 }
@@ -601,13 +601,18 @@ th, td {
 .submitMe {
   margin: 2px 13px 0 0;
   float: right;
-  height: 40px;
-  width: 50px;
+  height: 30px;
+  width: 35px;
   color: whitesmoke;
-  background-color: #555555;
+  background-color: #00ad5f;
   border: 1px solid black;
   font-size: 18px;
   border-radius: 9%;
+  padding-bottom: 30px;
+}
+
+.submitMe:hover {
+  background-color: #555555;
 }
 
 .lableMeMe {
@@ -630,7 +635,7 @@ th, td {
 }
 
 .searchMe {
-  margin-left: 1000px;
+  margin-left: 1023px;
   padding-top: 60px;
   margin-bottom: 15px;
 }
@@ -654,8 +659,45 @@ th, td {
   color: #808080;
   line-height: 1.4;
   background-color: #222222;
+  width: 135px;
+  font-weight: 700;
+  margin-left: 5px;
+}
+
+.updateNumberMe {
+  font-family: Lato-Regular;
+  font-size: 15px;
+  color: #808080;
+  line-height: 1.4;
+  background-color: #222222;
+  width: 55px;
+  font-weight: 700;
+  text-align: revert;
+  margin-left: 56px;
+}
+
+.updatePersenMe {
+  font-family: Lato-Regular;
+  font-size: 15px;
+  color: #808080;
+  line-height: 1.4;
+  background-color: #222222;
+  width: 38px;
+  font-weight: 700;
+  text-align: revert;
+  margin-left: 56px;
+}
+
+.updateDateMe {
+  font-family: Lato-Regular;
+  font-size: 15px;
+  color: #808080;
+  line-height: 1.4;
+  background-color: #222222;
   font-weight: 700;
   margin-left: -15px;
+  width: 115px;
+  margin-left: 62px;
 }
 
 .updateMe:focus {

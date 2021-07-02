@@ -1,17 +1,21 @@
 import logo from './logo.svg';
 import './App.css';
-// import Button from 'react-bootstrap'
 import Modal from 'react-modal'
 import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { TiArrowSortedDown } from 'react-icons/ti';
+import { RiDeleteBin5Line } from 'react-icons/ri';
+import { AiOutlineUsergroupAdd, AiOutlineClose } from 'react-icons/ai';
 import { BsSearch } from 'react-icons/bs';
+import { MdDone } from 'react-icons/md';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import PropagateLoader from "react-spinners/PropagateLoader";
+import BarLoader from "react-spinners/BarLoader";
 
 
 function App() {
-  const { register, getValues, watch} = useForm();
+  const { register, getValues} = useForm();
   const [dataShow, setDataShow] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedDateStart, setSelectedDateStart] = useState(null);
@@ -20,9 +24,6 @@ function App() {
   const soTienNo = useRef();
   const phanTramLai = useRef();
   const search = useRef();
-  const tenNguoiNoNo = useRef();
-  //const [prop, setProp] = useState('')
-
 
   useEffect(() => {
     fetch("https://60d45efb61160900173cb026.mockapi.io/users").then(
@@ -41,53 +42,50 @@ function App() {
 
   function ShowHandle() {
     var data = JSON.parse(localStorage.getItem('dataShow'));
-    return (
-      data.map((item, index) => {
-        if (item.ngayNo.toString().indexOf("/") == -1) {
-          var ngayNo = convert(new Date(parseInt(item.ngayNo, 10) * 1000));
-          var ngayTra = convert(new Date(parseInt(item.ngayTra, 10) * 1000));
-        } else {
-          var ngayNo = item.ngayNo;
-          var ngayTra = item.ngayTra;
-        }
-        if (!item.status) {
-          return (
-            <tr class="row100 body " key={index}>
-              <td class="cell100 column1"><form onSubmit={() => UpdateHandle(data, index, "tenNguoiNo")}><input id="title" className="updateMe" type="text" defaultValue={item.tenNguoiNo} {...register("tenNguoiNo" + index)}/></form></td>
-              <td class="cell100 column2"><form onSubmit={() => UpdateHandle(data, index, "soTienNo")}><input id="title" className="updateMe" type="number" defaultValue={item.soTienNo} {...register("soTienNo" + index)}/><label>VND</label></form></td>
-              <td class="cell100 column3"><form onSubmit={() => UpdateHandle(data, index, "ngayNo")}>
-                <DatePicker 
-                  placeholderText="yyyy/mm/dd"
-                  //selected={selectedDateEnd}
-                  defaultValue={ngayNo}
-                  dateFormat='yyyy/MM/dd'
-                  minDate={new Date()}
-                  isClearable
-                  className="datePickStyle"
-                  required
-                /></form>
-              </td>
-              <td class="cell100 column4"><form onSubmit={() => UpdateHandle(data, index, "ngayTra")}>{ngayTra}</form></td>
-              <td class="cell100 column5"><form onSubmit={() => UpdateHandle(data, index, "phanTramLai")}><input id="title" className="updateMe" type="number" defaultValue={item.phanTramLai} {...register("phanTramLai" + index)}/><label> %</label></form></td>
-              <td class="cell100 column6">{MoneyMustPayHandle(item.soTienNo, item.ngayNo, item.ngayTra, item.phanTramLai)} VND</td>
-              <td class="cell100 column7"><button className="deleteMe" onClick={() => DeleteHandle(data, index)}>DELETE</button></td>
-            </tr>
-          );
-        } else {
-          return (
-            <tr class="row100 body lineThough" key={index}>
-              <td class="cell100 column1"><input id='title' type="text" className="updateMe" defaultValue={item.tenNguoiNo} /></td>
-              <td class="cell100 column2">{item.soTienNo} VND</td>
-              <td class="cell100 column3">{ngayNo}</td>
-              <td class="cell100 column4">{ngayTra}</td>
-              <td class="cell100 column5">{item.phanTramLai}%</td>
-              <td class="cell100 column6">{MoneyMustPayHandle(item.soTienNo, item.ngayNo, item.ngayTra, item.phanTramLai)} VND</td>
-              <td class="cell100 column7"></td>
-            </tr>
-          );
-        }
-      })
-    );
+    if (data !== null) {
+      return (
+        data.map((item, index) => {
+          if (item.ngayNo.toString().indexOf("/") == -1) {
+            var ngayNo = convert(new Date(parseInt(item.ngayNo, 10) * 1000));
+            var ngayTra = convert(new Date(parseInt(item.ngayTra, 10) * 1000));
+          } else {
+            var ngayNo = item.ngayNo;
+            var ngayTra = item.ngayTra;
+          }
+          var curr1 = new Date(ngayNo.toString());
+          curr1.setDate(curr1.getDate());
+          var ngayNoAfter = curr1.toISOString().substr(0,10);
+          var curr2 = new Date(ngayTra.toString());
+          curr2.setDate(curr2.getDate());
+          var ngayTraAfer = curr2.toISOString().substr(0,10);
+          if (!item.status) {
+            return (
+              <tr class="row100 body " key={index}>
+                <td class="cell100 column1"><form onSubmit={() => UpdateHandle(data, index, "tenNguoiNo")}><input id="title" className="updateMe" type="text" placeholder={item.tenNguoiNo} {...register("tenNguoiNo" + index)} onBlur={() => returnValueHandle()} onClick={() => getValuePresentHandle()} /></form></td>
+                <td class="cell100 column2"><table><tr><td><form onSubmit={() => UpdateHandle(data, index, "soTienNo")}><input id="title" className="updateNumberMe" type="number" placeholder={item.soTienNo} {...register("soTienNo" + index)} onBlur={() => returnValueHandle()} /></form></td><td>VND</td></tr></table></td>
+                <td class="cell100 column3"><form onChange={() => UpdateHandle(data, index, "ngayNo")}><input id="title" className="updateDateMe" type="date" defaultValue={ngayNoAfter} {...register("ngayNo" + index)}/></form></td>
+                <td class="cell100 column4"><form onChange={() => UpdateHandle(data, index, "ngayTra")}><input id="title" className="updateDateMe" type="date" defaultValue={ngayTraAfer} {...register("ngayTra" + index)}/></form></td>
+                <td class="cell100 column5"><table><tr><td><form onSubmit={() => UpdateHandle(data, index, "phanTramLai")}><input id="title" className="updatePersenMe" type="number" placeholder={item.phanTramLai} {...register("phanTramLai" + index)} onBlur={() => returnValueHandle()} /></form></td><td>%</td></tr></table></td>
+                <td class="cell100 column6">{MoneyMustPayHandle(item.soTienNo, item.ngayNo, item.ngayTra, item.phanTramLai)} VND</td>
+                <td class="cell100 column7"><button className="deleteMe" onClick={() => DeleteHandle(data, index)}><RiDeleteBin5Line/></button></td>
+              </tr>
+            );
+          } else {
+            return (
+              <tr class="row100 lineThough " key={index}>
+                <td class="cell100 column1"><form onSubmit={() => UpdateHandle(data, index, "tenNguoiNo")}><input id="title" className="updateMe" type="text" placeholder={item.tenNguoiNo} {...register("tenNguoiNo" + index)} onBlur={() => returnValueHandle()}/></form></td>
+                <td class="cell100 column2"><table><tr><td><form onSubmit={() => UpdateHandle(data, index, "soTienNo")}><input id="title" className="updateNumberMe" type="number" placeholder={item.soTienNo} {...register("soTienNo" + index)} onBlur={() => returnValueHandle()} /></form></td><td>VND</td></tr></table></td>
+                <td class="cell100 column3"><form onChange={() => UpdateHandle(data, index, "ngayNo")}><input id="title" className="updateDateMe" type="date" defaultValue={ngayNoAfter} {...register("ngayNo" + index)}/></form></td>
+                <td class="cell100 column4"><form onChange={() => UpdateHandle(data, index, "ngayTra")}><input id="title" className="updateDateMe" type="date" defaultValue={ngayTraAfer} {...register("ngayTra" + index)}/></form></td>
+                <td class="cell100 column5"><table><tr><td><form onSubmit={() => UpdateHandle(data, index, "phanTramLai")}><input id="title" className="updatePersenMe" type="number" placeholder={item.phanTramLai} {...register("phanTramLai" + index)} onBlur={() => returnValueHandle()} /></form></td><td>%</td></tr></table></td>
+                <td class="cell100 column6">{MoneyMustPayHandle(item.soTienNo, item.ngayNo, item.ngayTra, item.phanTramLai)} VND</td>
+                <td class="cell100 column7"></td>
+              </tr>
+            );
+          }
+        })
+      );
+    }
   }
 
   function MoneyMustPayHandle(soTienNo ,ngayNo, ngayTra, phanTramLai) {
@@ -124,7 +122,7 @@ function App() {
     var obj = data[item];
     obj.status = true;
     data.splice(item, 1);
-    data.push(obj);  
+    data.push(obj);
     localStorage.setItem('dataShow', JSON.stringify(data));
     setDataShow(data);
   }
@@ -174,21 +172,31 @@ function App() {
     localStorage.setItem('dataShow', JSON.stringify(data));
     setDataShow(data);
   }
+
+  function returnValueHandle() {
+    window.location.reload(false);
+  }
+
+  function getValuePresentHandle() {
+    alert('OK');
+  }
   
   return (
     <div className="colorMe">
-      <h2 className="titleMe">Lãi Suất Ngân Hàng</h2><br/>
-      <div class="limiter">
+      <h2 className="titleMe">Lãi Suất Ngân Hàng</h2>
+      <PropagateLoader color='#00ad5f' size={15}/>
+      <BarLoader color='#00ad5f' size={15}/>
+      <div class="limiter"> 
         <div class="container-table100">
           <div class="wrap-table100">
             <form class="input-group searchMe" onSubmit={() => searchHandle(search.current.value)}>
               <div class="form-outline">
-                <input id="search-focus" type="search" id="form1" class="cssMe" placeholder="Search name" ref={search}/>
+                <input id="search-focus" type="search" id="form1" class="cssMe" placeholder="Search name" ref={search} onClickOut/>
               </div>
               <button type="button" class="btn btn-primary styleMe" onClick={() => searchHandle(search.current.value)}>
                 <BsSearch/>
               </button>
-              <span className="buttonMe" onClick={() => setModalIsOpen(true)}>Add</span>
+              <span className="buttonMe" onClick={() => setModalIsOpen(true)}><AiOutlineUsergroupAdd/></span>
             </form>
             <Modal 
               isOpen={modalIsOpen}
@@ -206,7 +214,7 @@ function App() {
                 }
               }
             >
-                <h1 style={{marginLeft: '50px', backgroundColor: 'whitesmoke'}} >Thêm thành viên <button className="closeMe" onClick={() => setModalIsOpen(false)}>X</button></h1>
+                <h1 style={{marginLeft: '69px', backgroundColor: 'whitesmoke' ,fontFamily: 'Alex Brush', fontSize:'40px'}} >Thêm thành viên <button className="closeMe" onClick={() => setModalIsOpen(false)}><AiOutlineClose/></button></h1>
                 <hr style={{color:'black', height:'3px'}}/>
                 <form class="formMe" onSubmit={() => AddHandle(tenNguoiNo.current.value, soTienNo.current.value, phanTramLai.current.value)}><br/>
                     <label class="lableMe">Tên người nợ:</label>
@@ -236,7 +244,7 @@ function App() {
                     /><br/><br/>
                     <label class="lableMe">Lãi (%):</label>
                     <input type="number" class="inputMe" ref={phanTramLai} required/><br/>
-                    <button type="submit" class="submitMe">Add</button>
+                    <button type="submit" class="submitMe"><MdDone/></button>
                 </form>
             </Modal>
             <div class="table100 ver3 m-b-110">
@@ -246,9 +254,9 @@ function App() {
                     <tr class="row100 head">
                       <th class="cell100 column1">Tên người nợ &nbsp;<button style={{color:'aquamarine'}} onClick={() => sortName()}><TiArrowSortedDown /></button></th>
                       <th class="cell100 column2">Số tiền nợ (VND)</th>
-                      <th class="cell100 column3">Ngày nợ</th>
+                      <th class="cell100 column3"><span style={{paddingLeft: '7px'}}>Ngày nợ</span></th>
                       <th class="cell100 column4">Ngày trả &nbsp;<button style={{color:'aquamarine'}} onClick={() => sortDate()}><TiArrowSortedDown /></button></th>
-                      <th class="cell100 column5">Lãi (%)</th>
+                      <th class="cell100 column5"><span style={{paddingLeft: '16px'}}>Lãi (%)</span></th>
                       <th class="cell100 column6">Nợ phải trả</th>
                       <th class="cell100 column7">Function</th>
                     </tr>
