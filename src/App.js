@@ -26,11 +26,16 @@ function App() {
   const search = useRef();
 
   useEffect(() => {
+    //return () => {
     fetch("https://60d45efb61160900173cb026.mockapi.io/users").then(
       (response) => response.json().then((data) => {
-          setDataShow(data);
+          //setDataShow(data);
+          //localStorage.removeItem('dataShow');
+          //console.log(typeof localStorage.getItem('dataShow'), "type local")
+          //console.log(localStorage.getItem('dataShow'), "value")
           if (localStorage.getItem('dataShow') === null) {
             localStorage.setItem('dataShow', JSON.stringify(data));
+            //localStorage.setItem('modalIsOpen', false);
             localStorage.removeItem('dataSearch');
           } else if (localStorage.getItem('dataSearch') !== null) {
             var dataOld = JSON.parse(localStorage.getItem('dataSearch'));
@@ -38,6 +43,7 @@ function App() {
           }
       })
     );
+    //}
   }, []);
 
   function ShowHandle() {
@@ -46,7 +52,7 @@ function App() {
       return (
         data.map((item, index) => {
           if (item.ngayNo.toString().indexOf("/") == -1) {
-            var ngayNo = convert(new Date(parseInt(item.ngayNo, 10) * 1000));
+            var ngayNo = convert(new Date(parseInt(item.ngayNo, 10) * 1000)); //Hàm comparse
             var ngayTra = convert(new Date(parseInt(item.ngayTra, 10) * 1000));
           } else {
             var ngayNo = item.ngayNo;
@@ -58,26 +64,26 @@ function App() {
           var curr2 = new Date(ngayTra.toString());
           curr2.setDate(curr2.getDate());
           var ngayTraAfer = curr2.toISOString().substr(0,10);
-          if (!item.status) {
+          if (!item.status) { //uuid
             return (
-              <tr class="row100 body " key={index}>
-                <td class="cell100 column1"><form onSubmit={() => UpdateHandle(data, index, "tenNguoiNo")}><input id="title" className="updateMe" type="text" placeholder={item.tenNguoiNo} {...register("tenNguoiNo" + index)} onBlur={() => returnValueHandle()} onClick={() => getValuePresentHandle()} /></form></td>
-                <td class="cell100 column2"><table><tr><td><form onSubmit={() => UpdateHandle(data, index, "soTienNo")}><input id="title" className="updateNumberMe" type="number" placeholder={item.soTienNo} {...register("soTienNo" + index)} onBlur={() => returnValueHandle()} /></form></td><td>VND</td></tr></table></td>
-                <td class="cell100 column3"><form onChange={() => UpdateHandle(data, index, "ngayNo")}><input id="title" className="updateDateMe" type="date" defaultValue={ngayNoAfter} {...register("ngayNo" + index)}/></form></td>
-                <td class="cell100 column4"><form onChange={() => UpdateHandle(data, index, "ngayTra")}><input id="title" className="updateDateMe" type="date" defaultValue={ngayTraAfer} {...register("ngayTra" + index)}/></form></td>
-                <td class="cell100 column5"><table><tr><td><form onSubmit={() => UpdateHandle(data, index, "phanTramLai")}><input id="title" className="updatePersenMe" type="number" placeholder={item.phanTramLai} {...register("phanTramLai" + index)} onBlur={() => returnValueHandle()} /></form></td><td>%</td></tr></table></td>
+              <tr class="row100 body " key={item.id}>
+                <td class="cell100 column1"><form onSubmit={() => UpdateHandle(data, item.id, "tenNguoiNo")}><input id="title" className="updateMe" type="text" defaultValue={item.tenNguoiNo} {...register("tenNguoiNo" + item.id)} onBlur={() => returnValueHandle()}/></form></td>
+                <td class="cell100 column2"><table><tr><td><form onSubmit={() => UpdateHandle(data, item.id, "soTienNo")}><input id="title" className="updateNumberMe" type="number" defaultValue={item.soTienNo} {...register("soTienNo" + item.id)} onBlur={() => returnValueHandle()} /></form></td><td>VND</td></tr></table></td>
+                <td class="cell100 column3"><form onChange={() => UpdateHandle(data, item.id, "ngayNo")}><input id="title" className="updateDateMe" type="date" defaultValue={ngayNoAfter} {...register("ngayNo" + item.id)}/></form></td>
+                <td class="cell100 column4"><form onChange={() => UpdateHandle(data, item.id, "ngayTra")}><input id="title" className="updateDateMe" type="date" defaultValue={ngayTraAfer} {...register("ngayTra" + item.id)}/></form></td>
+                <td class="cell100 column5"><table><tr><td><form onSubmit={() => UpdateHandle(data, item.id, "phanTramLai")}><input id="title" className="updatePersenMe" type="number" defaultValue={item.phanTramLai} {...register("phanTramLai" + item.id)} onBlur={() => returnValueHandle()} /></form></td><td>%</td></tr></table></td>
                 <td class="cell100 column6">{MoneyMustPayHandle(item.soTienNo, item.ngayNo, item.ngayTra, item.phanTramLai)} VND</td>
                 <td class="cell100 column7"><button className="deleteMe" onClick={() => DeleteHandle(data, index)}><RiDeleteBin5Line/></button></td>
               </tr>
             );
           } else {
             return (
-              <tr class="row100 lineThough " key={index}>
-                <td class="cell100 column1"><form onSubmit={() => UpdateHandle(data, index, "tenNguoiNo")}><input id="title" className="updateMe" type="text" placeholder={item.tenNguoiNo} {...register("tenNguoiNo" + index)} onBlur={() => returnValueHandle()}/></form></td>
-                <td class="cell100 column2"><table><tr><td><form onSubmit={() => UpdateHandle(data, index, "soTienNo")}><input id="title" className="updateNumberMe" type="number" placeholder={item.soTienNo} {...register("soTienNo" + index)} onBlur={() => returnValueHandle()} /></form></td><td>VND</td></tr></table></td>
-                <td class="cell100 column3"><form onChange={() => UpdateHandle(data, index, "ngayNo")}><input id="title" className="updateDateMe" type="date" defaultValue={ngayNoAfter} {...register("ngayNo" + index)}/></form></td>
-                <td class="cell100 column4"><form onChange={() => UpdateHandle(data, index, "ngayTra")}><input id="title" className="updateDateMe" type="date" defaultValue={ngayTraAfer} {...register("ngayTra" + index)}/></form></td>
-                <td class="cell100 column5"><table><tr><td><form onSubmit={() => UpdateHandle(data, index, "phanTramLai")}><input id="title" className="updatePersenMe" type="number" placeholder={item.phanTramLai} {...register("phanTramLai" + index)} onBlur={() => returnValueHandle()} /></form></td><td>%</td></tr></table></td>
+              <tr class="row100 lineThough " key={item.id}>
+                <td class="cell100 column1"><form onSubmit={() => UpdateHandle(data, item.id, "tenNguoiNo")}><input id="title" className="updateMe" type="text" defaultValue={item.tenNguoiNo} {...register("tenNguoiNo" + item.id)} onBlur={() => returnValueHandle()}/></form></td>
+                <td class="cell100 column2"><table><tr><td><form onSubmit={() => UpdateHandle(data, item.id, "soTienNo")}><input id="title" className="updateNumberMe" type="number" defaultValue={item.soTienNo} {...register("soTienNo" + item.id)} onBlur={() => returnValueHandle()} /></form></td><td>VND</td></tr></table></td>
+                <td class="cell100 column3"><form onChange={() => UpdateHandle(data, item.id, "ngayNo")}><input id="title" className="updateDateMe" type="date" defaultValue={ngayNoAfter} {...register("ngayNo" + item.id)}/></form></td>
+                <td class="cell100 column4"><form onChange={() => UpdateHandle(data, item.id, "ngayTra")}><input id="title" className="updateDateMe" type="date" defaultValue={ngayTraAfer} {...register("ngayTra" + item.id)}/></form></td>
+                <td class="cell100 column5"><table><tr><td><form onSubmit={() => UpdateHandle(data, item.id, "phanTramLai")}><input id="title" className="updatePersenMe" type="number" defaultValue={item.phanTramLai} {...register("phanTramLai" + item.id)} onBlur={() => returnValueHandle()} /></form></td><td>%</td></tr></table></td>
                 <td class="cell100 column6">{MoneyMustPayHandle(item.soTienNo, item.ngayNo, item.ngayTra, item.phanTramLai)} VND</td>
                 <td class="cell100 column7"></td>
               </tr>
@@ -91,10 +97,9 @@ function App() {
   function MoneyMustPayHandle(soTienNo ,ngayNo, ngayTra, phanTramLai) {
     var date = new Date(ngayNo);
     var date1 = new Date(ngayTra);
-    var difference= Math.abs(date1-date);
-    var days = difference/(1000 * 3600 * 24);
+    var days = Math.abs(date1-date)/(1000 * 3600 * 24);
     var soTienPhaiTra = (soTienNo*days*phanTramLai/100)+parseInt(soTienNo);
-    return soTienPhaiTra;
+    return parseFloat(soTienPhaiTra).toFixed(2);
   }
 
   function convert(str) {
@@ -115,6 +120,7 @@ function App() {
     var data = JSON.parse(localStorage.getItem('dataShow'));
     data.unshift(obj);
     localStorage.setItem('dataShow', JSON.stringify(data));
+    //localStorage.setItem('modalIsOpen', false);
     setDataShow(dataShow);
   }
 
@@ -129,9 +135,17 @@ function App() {
 
   function sortName() {
     var data = JSON.parse(localStorage.getItem('dataShow'));
-    data.sort(function(a,b){return a.tenNguoiNo.localeCompare(b.tenNguoiNo)});
+    data.sort(function(a,b){
+      //return a.tenNguoiNo.localeCompare(b.tenNguoiNo)
+      // let x = a.tenNguoiNo.toUpperCase(),
+      //   y = b.tenNguoiNo.toUpperCase();
+      // return x == y ? 0 : x > y ? 1 : -1;
+      return (Number(a.tenNguoiNo.match(/(\d+)/g)) - Number((b.tenNguoiNo.match(/(\d+)/g))));
+    });
+
     localStorage.setItem('dataShow', JSON.stringify(data));
     localStorage.removeItem('dataSearch');
+    //window.location.reload(false);
     setDataShow(data);
   }
 
@@ -140,6 +154,7 @@ function App() {
     data.sort(function(a,b){return a.ngayTra.toString().localeCompare(b.ngayTra)});
     localStorage.setItem('dataShow', JSON.stringify(data));
     localStorage.removeItem('dataSearch');
+    //window.location.reload(false);
     setDataShow(data);
   }
 
@@ -154,19 +169,19 @@ function App() {
   function UpdateHandle(data, index, nameProp) {
     switch(nameProp) {
       case "tenNguoiNo":
-        data[index].tenNguoiNo = getValues(nameProp + index);
+        data[index-2].tenNguoiNo = getValues(nameProp + index);
         break;
       case "soTienNo":
-        data[index].soTienNo = getValues(nameProp + index);
+        data[index-2].soTienNo = getValues(nameProp + index);
         break;
       case "ngayNo":
-        data[index].ngayNo = getValues(nameProp + index);
+        data[index-2].ngayNo = getValues(nameProp + index);
         break;
       case "ngayTra":
-        data[index].ngayTra = getValues(nameProp + index);
+        data[index-2].ngayTra = getValues(nameProp + index);
         break;
       case "phanTramLai":
-        data[index].phanTramLai = getValues(nameProp + index);
+        data[index-2].phanTramLai = getValues(nameProp + index);
         break;
     }
     localStorage.setItem('dataShow', JSON.stringify(data));
@@ -177,10 +192,19 @@ function App() {
     window.location.reload(false);
   }
 
-  function getValuePresentHandle() {
-    alert('OK');
-  }
-  
+  // function openModalHandle(booleanValue) {
+  //   localStorage.setItem('modalIsOpen', booleanValue);
+  //   window.location.reload(false);
+  // }
+
+  // function stringToBoolean(val) {
+  //   var a = {
+  //     'true': true,
+  //     'false': false
+  //   };
+  //   return a[val];
+  // }
+
   return (
     <div className="colorMe">
       <h2 className="titleMe">Lãi Suất Ngân Hàng</h2>
